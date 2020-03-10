@@ -49,7 +49,7 @@ function Appbar() {
         }
         console.log("ROWS", rows)
         let data = {
-          title: "SIMILAR TICKETS",
+          title: "Frequently Asked Questions",
           rows: rows
         }
         console.log("DATA", data)

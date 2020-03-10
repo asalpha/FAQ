@@ -61,17 +61,39 @@ export default function SignInSide() {
 
   let apiFetch = async (data) => {
     try {
-    await fetch(`http://74b6b87c.ngrok.io/ticket?token=${token}`)
+    await fetch('http://74b6b87c.ngrok.io/ticket', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: token,
+        problemDesc: desc,
+        sensitivity: 1,
+        submit: false,
+      })
+    })
       .then(res => res.json())
-      .then((result) => {
+      .then((response) => {
 
+        console.log(response)
+        console.log(response.match)
+        let result = []
+        result.push(response.topResult)
+        // if (!response.match) {
+        //   console.log(response.topResult)
+        //   result.push(response.topResult)
+        // } else {
+        //   result.push(response.topResult)
+        // }
         console.log(result)
         var rows = []
-        for (let i = 0; i < result.tickets.length; i++) {
-          console.log("i", result.tickets[i])
+        for (let i = 0; i < result.length; i++) {
+          console.log("i", result[i])
           rows.push({
-            title: result.tickets[i].problemDesc,
-            content: result.tickets[i].solutionDesc
+            title: result[i].problemDesc,
+            content: result[i].solutionDesc
           })
         }
         console.log("ROWS", rows)
