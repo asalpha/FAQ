@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import Typography from '@material-ui/core/Typography';
+import Appbar from './AppBar'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 
@@ -59,6 +60,8 @@ export default function SignInSide() {
   let history = useHistory();
   console.log("APP BAR HISTORY", history.location.state)
   let token = history.location.state ? history.location.state.token : "";
+  let user = history.location.state ? history.location.state.user : "";
+  console.log("SEARCH", token, user)
 
   let apiFetch = async (data) => {
     try {
@@ -123,7 +126,8 @@ export default function SignInSide() {
   }
 
   return (
-
+    <div>
+    <Appbar token={token} user={user} />
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
@@ -168,6 +172,7 @@ export default function SignInSide() {
         </div>
       </Grid>
       </Grid>
+      </div>
 
   );
 }

@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Faq from 'react-faq-component';
 import TextField from '@material-ui/core/TextField';
+import Appbar from './AppBar'
 import { useHistory } from "react-router-dom";
 
 const dataOld = {
@@ -51,6 +52,7 @@ const styles = {
 export default function AnswerTicket() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
+  let user = history.location.state ? history.location.state.user : "";
   let data = history.location.state ? history.location.state.data : dataOld;
   let update = {}
   let apiFetch = async (id, sol) => {
@@ -148,6 +150,8 @@ export default function AnswerTicket() {
     )
   }
     return (
+      <div>
+      <Appbar token={token} user={user} />
       <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
       <Typography component="h1" variant="h5">
         Please answer any tickets that you can
@@ -164,6 +168,7 @@ export default function AnswerTicket() {
       </CardActionArea>
     </Card>
     {e}
+      </div>
       </div>
       )
 }

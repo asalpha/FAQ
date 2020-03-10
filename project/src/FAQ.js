@@ -8,6 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Faq from 'react-faq-component';
+import Appbar from './AppBar'
 import { useHistory } from "react-router-dom";
 
 const dataOld = {
@@ -50,10 +51,13 @@ const styles = {
 export default function FAQ() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
+  let user = history.location.state ? history.location.state.user : "";
   console.log("APP TOKEN", token)
   let data = history.location.state ? history.location.state.data : dataOld;
 
     return (
+      <div>
+      <Appbar token={token} user={user} />
       <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
       <Card>
       <CardActionArea>
@@ -67,6 +71,7 @@ export default function FAQ() {
       </CardActionArea>
     </Card>
         <Faq data={data} styles={styles}/>
+      </div>
       </div>
       )
 }

@@ -69,6 +69,8 @@ export default function SignInSide() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   let history = useHistory();
+  let user = ""
+  let token = ""
 
 
   let login = async (user , pass) => {
@@ -91,7 +93,7 @@ export default function SignInSide() {
     alert(result)
   }
   console.log(result)
-  history.push("/", { token: result})
+  history.push("/", { token: result, user: user })
   return result
   })
 } catch(error) {

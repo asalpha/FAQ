@@ -15,10 +15,12 @@ import { useHistory } from "react-router-dom";
 function App() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
-  console.log("APP TOKEN", token)
+  let user = history.location.state ? history.location.state.user : "";
+
+  console.log("APP TOKEN USER", token, user)
   return (
     <div>
-      <Appbar token={token} />
+      <Appbar token={token} user={user} />
       <div style={{textAlign: 'center', alignItems:'center', backgroundColor:'white', height:'100vh'}}>
         <h1 style={{padding: 38, margin:0, color: 'black', textAlign: 'center'}}>
         WELCOME TO
