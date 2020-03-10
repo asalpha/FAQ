@@ -52,7 +52,7 @@ export default function AnswerTicket() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
   let data = history.location.state ? history.location.state.data : dataOld;
-
+  let update = {}
   let apiFetch = async (id, sol) => {
     try {
     await fetch('http://74b6b87c.ngrok.io/ticket', {
@@ -71,25 +71,24 @@ export default function AnswerTicket() {
       .then((response) => {
         console.log("RESPONSE")
         console.log(response)
-        // console.log(response.match)
         let result = []
-        // result.push(response.topResult)
-        // console.log(result)
-        // var rows = []
-        // for (let i = 0; i < result.length; i++) {
-        //   console.log("i", result[i])
-        //   rows.push({
-        //     title: result[i].problemDesc,
-        //     content: result[i].solutionDesc
-        //   })
-        // }
-        // console.log("ROWS", rows)
-        // let data = {
-        //   title: "SIMILAR TICKETS",
-        //   rows: rows
-        // }
-        // console.log("DATA", data)
-        // history.push("/ticket", { token: token, data:data})
+        result.push(response.ticket)
+        console.log(result)
+        var rows = []
+        for (let i = 0; i < result.length; i++) {
+          console.log("i", result[i])
+          rows.push({
+            title: result[i].problemDesc,
+            content: result[i].solutionDesc
+          })
+        }
+        console.log("ROWS", rows)
+        let data = {
+          title: "ANSWERED TICKET",
+          rows: rows
+        }
+        console.log("DATA", data)
+        history.push("/ticket", { token: token, data:data})
         return result
       })
     } catch(error) {
@@ -106,12 +105,12 @@ export default function AnswerTicket() {
   }
 
   let handleSubmit = (id) => {
-    console.log(id)
-    apiFetch(id, update.id)
+    console.log("INSIDE SUBMIT", id, update[id])
+    apiFetch(id, update[id])
   }
 
   console.log("Annswer Tickets", data)
-  let update = {}
+
   let e = []
   for (let i = 0; i < data.length; i++) {
     let id = data[i].id
