@@ -83,7 +83,7 @@ export default function SignInSide() {
           rows: rows
         }
         console.log("DATA", data)
-        history.push("/faq", { token: token, data:data})
+        history.push("/faq", { token: token, data:data, user:user})
         return result
       })
     } catch(error) {

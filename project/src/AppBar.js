@@ -93,9 +93,9 @@ function Appbar() {
             <AccountCircleIcon style={{marginRight:4}} />
             {user}
           </IconButton>
-          <Typography variant="h6" style={{flexGrow: 1}}>
-            FAQ
-          </Typography>
+          <Button onClick={() =>  handlePress("/")} style={{color:'white', fontWeight:'bold', fontSize:33, flexGrow: 1}}>
+            FAQ.AI
+          </Button>
           <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>
           <Button onClick={() => handlePress("/search")} style={{margin:15}} variant="contained" color="secondary">Search</Button>
           <Button onClick={() => handlePress("/faq")} style={{margin:15}} variant="contained" color="secondary">FAQ</Button>

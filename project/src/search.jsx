@@ -100,7 +100,7 @@ export default function SignInSide() {
           rows: rows
         }
         console.log("DATA", data)
-        history.push("/ticket", { token: token, data:data})
+        history.push("/ticket", { token: token, data:data, user:user})
         return result
       })
     } catch(error) {
@@ -137,7 +137,7 @@ export default function SignInSide() {
             <LiveHelp />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Search for your problem
+            Search or Create a ticket
           </Typography>
             <TextField
               variant="filled"

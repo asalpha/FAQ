@@ -90,7 +90,7 @@ export default function AnswerTicket() {
           rows: rows
         }
         console.log("DATA", data)
-        history.push("/ticket", { token: token, data:data})
+        history.push("/ticket", { token: token, data:data, user: user})
         return result
       })
     } catch(error) {
