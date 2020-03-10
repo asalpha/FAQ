@@ -13,6 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from "react-router-dom";
+
 
 
 function Copyright() {
@@ -35,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     height: '100vh'
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://cdn.dribbble.com/users/2424774/screenshots/6536759/06_protect_your_account.png)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
@@ -64,6 +66,53 @@ const useStyles = makeStyles(theme => ({
 export default function SignInSide() {
   const classes = useStyles();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  let history = useHistory();
+
+
+  let login = async (user , pass) => {
+    try {
+    await fetch('http://74b6b87c.ngrok.io/login', {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: user,
+    password: pass,
+  })
+})
+.then(res => res.json())
+.then((result) => {
+  if(result === "Invalid username: " + user) {
+    console.log(result)
+    alert(result)
+  }
+  console.log(result)
+  history.push("/", { token: result})
+  return result
+  })
+} catch(error) {
+  alert(error)
+}
+}
+
+// login("hammondpang@ibm.com","hammondpang")
+
+  let handleEmail = event => {
+    setEmail(event.target.value)
+  };
+  let handlePassword = event => {
+    setPassword(event.target.value)
+  };
+
+  let handlePress = event => {
+    console.log(email)
+    console.log(password)
+    login(email, password)
+  }
 
   return (
 
@@ -78,7 +127,7 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Log in
           </Typography>
-          <form className={classes.form} noValidate>
+
             <TextField
               variant="outlined"
               margin="normal"
@@ -89,6 +138,7 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleEmail}
             />
             <TextField
               variant="outlined"
@@ -100,6 +150,7 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handlePassword}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -110,26 +161,12 @@ export default function SignInSide() {
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
+              onClick={handlePress}
             >
-              Sign In
+              Log in
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
-          </form>
+
+
         </div>
       </Grid>
       </Grid>

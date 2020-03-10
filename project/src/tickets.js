@@ -8,8 +8,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Faq from 'react-faq-component';
+import { useHistory } from "react-router-dom";
 
-const data = {
+const dataOld = {
   title: "TICKETS",
   rows: [
     {
@@ -46,37 +47,10 @@ const styles = {
 
 
 
-export default class FAQ extends Component {
-  constructor () {
-    super()
-    this.state = { data: {rows:[], title: "FAQ - Frequently Asked Questions"} }
-  }
-
-  componentWillMount() {
-    fetch("http://6c61a55f.ngrok.io/faq?token=31de320c42734c6d08e8be765ec70b0a")
-    .then(res => res.json())
-    .then(
-      (result) => {
-        result = result.faqs
-        console.log("result",result)
-        let rows = []
-        for (let i = 0; i < result.length; i++){
-          console.log("i", result[i])
-          rows.push({
-            title: result[i].questionDesc,
-            content: result[i].solutionDesc
-          })
-        }
-        this.state.data.rows = rows
-        console.log(this.state.data)
-      }
-    )
-  }
-
-  render() {
-    // if ("LENGTH",this.state.data.rows.length === 0) {
-    //   return null;
-    // }
+export default function Tickets() {
+  let history = useHistory();
+  let token = history.location.state ? history.location.state.token : "";
+  let data = history.location.state ? history.location.state.data : dataOld;
     return (
       <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
       <Card>
@@ -85,7 +59,7 @@ export default class FAQ extends Component {
           component="img"
           alt="Contemplative Reptile"
           height="300"
-          image="https://source.unsplash.com/random"
+          image="https://c1.sfdcstatic.com/content/dam/blogs/us/thumbnails/4-ways-to-improve-customer-service-with-a-conversational-approach/shutterstock_207788785.jpg"
           title="Contemplative Reptile"
         />
       </CardActionArea>
@@ -93,5 +67,4 @@ export default class FAQ extends Component {
         <Faq data={data} styles={styles}/>
       </div>
       )
-    }
 }

@@ -13,20 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from "react-router-dom";
 
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © Ali Saeed - DO NOT COPY WITHOUT PERMISSION'}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     height: '100vh'
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://upload.wikimedia.org/wikipedia/commons/d/dd/Logo_for_Think._Check._Submit.png)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
@@ -64,6 +52,82 @@ const useStyles = makeStyles(theme => ({
 export default function SignInSide() {
   const classes = useStyles();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [ques, setQues] = React.useState("");
+  const [sol, setSol] = React.useState("");
+
+  let history = useHistory();
+  console.log("APP BAR HISTORY", history.location.state)
+  let token = history.location.state ? history.location.state.token : "";
+
+
+  let apiFetch = async () => {
+    try {
+    await fetch(`http://74b6b87c.ngrok.io/faq?token=${token}`)
+      .then(res => res.json())
+      .then((result) => {
+
+        console.log(result)
+        var rows = []
+        for (let i = 0; i < result.faqs.length; i++) {
+          console.log("i", result.faqs[i])
+          rows.push({
+            title: result.faqs[i].questionDesc,
+            content: result.faqs[i].solutionDesc
+          })
+        }
+        console.log("ROWS", rows)
+        let data = {
+          title: "SIMILAR TICKETS",
+          rows: rows
+        }
+        console.log("DATA", data)
+        history.push("/faq", { token: token, data:data})
+        return result
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
+
+  let submit = async (ques , sol) => {
+    try {
+    await fetch('http://74b6b87c.ngrok.io/faq', {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    token: token,
+    questionDesc: ques,
+    solutionDesc: sol,
+    sensitivity: 0,
+  })
+})
+.then(res => res.json())
+.then((result) => {
+  console.log(result)
+  apiFetch()
+  return result
+  })
+} catch(error) {
+  alert(error)
+}
+}
+
+let handleQues = event => {
+  setQues(event.target.value)
+};
+let handleSol = event => {
+  setSol(event.target.value)
+};
+
+let handlePress = event => {
+  console.log(ques)
+  console.log(sol)
+  submit(ques, sol)
+}
 
   return (
 
@@ -78,7 +142,6 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Submit FAQ Page
           </Typography>
-          <form className={classes.form} noValidate>
             <TextField
               variant="outlined"
               margin="normal"
@@ -89,6 +152,7 @@ export default function SignInSide() {
               name="ques"
               autoComplete="ques"
               autoFocus
+              onChange={handleQues}
             />
             <TextField
               variant="filled"
@@ -102,6 +166,7 @@ export default function SignInSide() {
               name="ans"
               autoComplete="ans"
               autoFocus
+              onChange={handleSol}
             />
 
             <Button
@@ -110,11 +175,11 @@ export default function SignInSide() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={handlePress}
             >
               Submit FAQ
             </Button>
 
-          </form>
         </div>
       </Grid>
       </Grid>

@@ -10,16 +10,20 @@ import logo from './logo.svg';
 import './App.css';
 import FAQ from "./FAQ";
 import Appbar from './AppBar'
+import { useHistory } from "react-router-dom";
 
 function App() {
+  let history = useHistory();
+  let token = history.location.state ? history.location.state.token : "";
+  console.log("APP TOKEN", token)
   return (
     <div>
-      <Appbar/>
-      <div style={{textAlign: 'center', alignItems:'center', backgroundColor:'black', height:'100vh'}}>
-        <h1 style={{padding: 88, paddingTop:151, margin:0, color: 'white', textAlign: 'center'}}>
+      <Appbar token={token} />
+      <div style={{textAlign: 'center', alignItems:'center', backgroundColor:'white', height:'100vh'}}>
+        <h1 style={{padding: 38, margin:0, color: 'black', textAlign: 'center'}}>
         WELCOME TO
         </h1>
-        <img src={'https://lh3.googleusercontent.com/proxy/5wxd9fYWKbmt0-7TALTwf1GH0nCR4BB8qj6XuqKv6knKlyg_7UpRb2FdClnDjsN84ia0tn5fxL5mFkBgV-b1QqMXJmWAT2Fe7Q'}  alt="logo" />
+        <img src={'https://www.pngitem.com/pimgs/m/404-4040941_faq-png-clipart-frequently-asked-questions-transparent-png.png'}  alt="logo" />
       </div>
 
     </div>

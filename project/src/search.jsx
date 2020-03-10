@@ -13,20 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from "react-router-dom";
 
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © Ali Saeed - DO NOT COPY WITHOUT PERMISSION'}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     height: '100vh'
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://previews.123rf.com/images/abluecup/abluecup1209/abluecup120900453/15405016-a-person-is-using-the-magnifying-glass.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
@@ -61,9 +49,55 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
 export default function SignInSide() {
   const classes = useStyles();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [desc, setDesc] = React.useState("");
+
+  let history = useHistory();
+  console.log("APP BAR HISTORY", history.location.state)
+  let token = history.location.state ? history.location.state.token : "";
+
+  let apiFetch = async (data) => {
+    try {
+    await fetch(`http://74b6b87c.ngrok.io/ticket?token=${token}`)
+      .then(res => res.json())
+      .then((result) => {
+
+        console.log(result)
+        var rows = []
+        for (let i = 0; i < result.tickets.length; i++) {
+          console.log("i", result.tickets[i])
+          rows.push({
+            title: result.tickets[i].problemDesc,
+            content: result.tickets[i].solutionDesc
+          })
+        }
+        console.log("ROWS", rows)
+        let data = {
+          title: "SIMILAR TICKETS",
+          rows: rows
+        }
+        console.log("DATA", data)
+        history.push("/tickets", { token: token, data:data})
+        return result
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
+
+  let handleChange = event => {
+    console.log(event.target.value)
+    setDesc(event.target.value)
+  }
+
+  let handlePress = () => {
+    apiFetch()
+    console.log("PREESSEEDD")
+  }
 
   return (
 
@@ -78,7 +112,6 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Search for your problem
           </Typography>
-          <form className={classes.form} noValidate>
             <TextField
               variant="filled"
               multiline
@@ -91,6 +124,7 @@ export default function SignInSide() {
               name="search"
               autoComplete="search"
               autoFocus
+              onChange={handleChange}
             />
 
             <Button
@@ -99,11 +133,11 @@ export default function SignInSide() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={handlePress}
             >
               Search
             </Button>
 
-          </form>
         </div>
       </Grid>
       </Grid>

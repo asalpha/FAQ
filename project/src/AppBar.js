@@ -8,12 +8,63 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import logo from './logo.svg';
 import './App.css';
-
+import { useHistory } from "react-router-dom";
 
 function Appbar() {
+  let history = useHistory();
+  console.log("APP BAR HISTORY", history.location.state)
+  let token = history.location.state ? history.location.state.token : "";
+
+  let handlePress = path => {
+    console.log(path)
+    console.log("TOKEN", token)
+
+    if (!token) {
+      console.log('inside sign in')
+      path = "/signin"
+      history.push(path, { token: token})
+    } else if (path === "/faq") {
+      apiFetch()
+    } else {
+      console.log('inside else')
+      history.push(path, { token: token})
+  }
+
+}
+
+  let apiFetch = async () => {
+    try {
+    await fetch(`http://74b6b87c.ngrok.io/faq?token=${token}`)
+      .then(res => res.json())
+      .then((result) => {
+
+        console.log(result)
+        var rows = []
+        for (let i = 0; i < result.faqs.length; i++) {
+          console.log("i", result.faqs[i])
+          rows.push({
+            title: result.faqs[i].questionDesc,
+            content: result.faqs[i].solutionDesc
+          })
+        }
+        console.log("ROWS", rows)
+        let data = {
+          title: "SIMILAR TICKETS",
+          rows: rows
+        }
+        console.log("DATA", data)
+        history.push("/faq", { token: token, data:data})
+        return result
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
+
   return (
     <div className="App">
-    <AppBar position="static" color='secondary' position='sticky'>
+    <AppBar position="static" color='primary' position='sticky'>
         <Toolbar>
           <IconButton edge="start" style={{marginRight:6}} color="inherit" aria-label="menu">
             <MenuIcon />
@@ -21,10 +72,10 @@ function Appbar() {
           <Typography variant="h6" style={{flexGrow: 1}}>
             Find the solution to all your problems
           </Typography>
-          <Button style={{margin:15}} variant="contained" color="primary">Login</Button>
-          <Button style={{margin:15}} variant="contained" color="primary">Search</Button>
-          <Button style={{margin:15}} variant="contained" color="primary">FAQ</Button>
-          <Button style={{margin:15}} variant="contained" color="primary">Tickets</Button>
+          <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>
+          <Button onClick={() => handlePress("/search")} style={{margin:15}} variant="contained" color="secondary">Search</Button>
+          <Button onClick={() => handlePress("/faq")} style={{margin:15}} variant="contained" color="secondary">FAQ</Button>
+          <Button onClick={() => handlePress("/submitFaq")} style={{margin:15}} variant="contained" color="secondary">Submit FAQ</Button>
         </Toolbar>
       </AppBar>
     </div>
