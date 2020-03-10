@@ -8,6 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Faq from 'react-faq-component';
+import TextField from '@material-ui/core/TextField';
 import { useHistory } from "react-router-dom";
 
 const dataOld = {
@@ -47,13 +48,111 @@ const styles = {
 
 
 
-export default function Tickets() {
+export default function AnswerTicket() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
   let data = history.location.state ? history.location.state.data : dataOld;
-  console.log("TICEKTS", data)
+
+  let apiFetch = async (id, sol) => {
+    try {
+    await fetch('http://74b6b87c.ngrok.io/ticket', {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: token,
+        id: id,
+        solutionDesc: sol,
+      })
+    })
+      .then(res => res.json())
+      .then((response) => {
+        console.log("RESPONSE")
+        console.log(response)
+        // console.log(response.match)
+        let result = []
+        // result.push(response.topResult)
+        // console.log(result)
+        // var rows = []
+        // for (let i = 0; i < result.length; i++) {
+        //   console.log("i", result[i])
+        //   rows.push({
+        //     title: result[i].problemDesc,
+        //     content: result[i].solutionDesc
+        //   })
+        // }
+        // console.log("ROWS", rows)
+        // let data = {
+        //   title: "SIMILAR TICKETS",
+        //   rows: rows
+        // }
+        // console.log("DATA", data)
+        // history.push("/ticket", { token: token, data:data})
+        return result
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
+
+  let handleChange = event => {
+    update[event.target.id] = event.target.value
+    console.log(update)
+
+    // setDesc(event.target.value)
+  }
+
+  let handleSubmit = (id) => {
+    console.log(id)
+    apiFetch(id, update.id)
+  }
+
+  console.log("Annswer Tickets", data)
+  let update = {}
+  let e = []
+  for (let i = 0; i < data.length; i++) {
+    let id = data[i].id
+    update[id] = ""
+    e.push(
+      <Card style={{padding:44}}>
+      <Typography component="h2" variant="h5">
+        {data[i].problemDesc}
+      </Typography>
+        <TextField
+          variant="filled"
+          multiline
+          margin="normal"
+          required
+          fullWidth
+          rows="6"
+          id={id}
+          label="Enter the Solution Description here"
+          autoFocus
+          onChange={handleChange}
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          id={id}
+          // className={classes.submit}
+          onClick={event => handleSubmit(event.currentTarget.id)}
+        >
+          Submit
+        </Button>
+    </Card>
+    )
+  }
     return (
       <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
+      <Typography component="h1" variant="h5">
+        Please answer any tickets that you can
+      </Typography>
       <Card>
       <CardActionArea>
         <CardMedia
@@ -65,7 +164,7 @@ export default function Tickets() {
         />
       </CardActionArea>
     </Card>
-        <Faq data={data} styles={styles}/>
+    {e}
       </div>
       )
 }

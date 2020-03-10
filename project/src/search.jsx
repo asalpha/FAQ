@@ -54,6 +54,7 @@ export default function SignInSide() {
   const classes = useStyles();
   const [isOpen, setIsOpen] = React.useState(false);
   const [desc, setDesc] = React.useState("");
+  const [check, setCheck] = React.useState(false);
 
   let history = useHistory();
   console.log("APP BAR HISTORY", history.location.state)
@@ -71,7 +72,7 @@ export default function SignInSide() {
         token: token,
         problemDesc: desc,
         sensitivity: 1,
-        submit: false,
+        submit: check,
       })
     })
       .then(res => res.json())
@@ -81,12 +82,6 @@ export default function SignInSide() {
         console.log(response.match)
         let result = []
         result.push(response.topResult)
-        // if (!response.match) {
-        //   console.log(response.topResult)
-        //   result.push(response.topResult)
-        // } else {
-        //   result.push(response.topResult)
-        // }
         console.log(result)
         var rows = []
         for (let i = 0; i < result.length; i++) {
@@ -102,7 +97,7 @@ export default function SignInSide() {
           rows: rows
         }
         console.log("DATA", data)
-        history.push("/tickets", { token: token, data:data})
+        history.push("/ticket", { token: token, data:data})
         return result
       })
     } catch(error) {
@@ -114,6 +109,12 @@ export default function SignInSide() {
   let handleChange = event => {
     console.log(event.target.value)
     setDesc(event.target.value)
+  }
+
+
+  let handleCheck = event => {
+    console.log(event.target.checked)
+    setCheck(event.target.checked)
   }
 
   let handlePress = () => {
@@ -148,7 +149,11 @@ export default function SignInSide() {
               autoFocus
               onChange={handleChange}
             />
-
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Submit New Ticket"
+              onChange={handleCheck}
+            />
             <Button
               type="submit"
               fullWidth

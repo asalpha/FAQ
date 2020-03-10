@@ -25,6 +25,8 @@ function Appbar() {
       history.push(path, { token: token})
     } else if (path === "/faq") {
       apiFetch()
+    } else if (path === "/answerticket") {
+      ticketFetch()
     } else {
       console.log('inside else')
       history.push(path, { token: token})
@@ -61,6 +63,24 @@ function Appbar() {
     }
   }
 
+  let ticketFetch = async () => {
+    try {
+    await fetch(`http://74b6b87c.ngrok.io/ticket?token=${token}`)
+      .then(res => res.json())
+      .then((result) => {
+        result = result.tickets
+        result = result.filter(function(obj) {return obj.solutionDesc === ""})
+        console.log(result)
+        let data = []
+        console.log("DATA", data)
+        history.push("/answerticket", { token: token, data:result})
+        return result
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
 
   return (
     <div className="App">
@@ -75,6 +95,7 @@ function Appbar() {
           <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>
           <Button onClick={() => handlePress("/search")} style={{margin:15}} variant="contained" color="secondary">Search</Button>
           <Button onClick={() => handlePress("/faq")} style={{margin:15}} variant="contained" color="secondary">FAQ</Button>
+          <Button onClick={() => handlePress("/answerticket")} style={{margin:15}} variant="contained" color="secondary">Answer Tickets</Button>
           <Button onClick={() => handlePress("/submitFaq")} style={{margin:15}} variant="contained" color="secondary">Submit FAQ</Button>
         </Toolbar>
       </AppBar>

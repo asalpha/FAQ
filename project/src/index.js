@@ -7,6 +7,7 @@ import Faq from './FAQ';
 import SignIn from './SignInSide';
 import Submitfaq from './submitFaq'
 import Tickets from './tickets'
+import AnswerTicket from './answerTicket'
 import Search from './search'
 import * as serviceWorker from './serviceWorker';
 
@@ -17,7 +18,8 @@ const routing = (
       <Route path="/faq" component={Faq} />
       <Route path="/signin" component={SignIn} />
       <Route path="/submitfaq" component={Submitfaq} />
-      <Route path="/tickets" component={Tickets} />
+      <Route path="/ticket" component={Tickets} />
+      <Route path="/answerticket" component={AnswerTicket} />
       <Route path="/search" component={Search} />
     </div>
   </Router>
