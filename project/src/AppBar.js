@@ -39,7 +39,7 @@ function Appbar() {
 
   let apiFetch = async () => {
     try {
-    await fetch(`http://74b6b87c.ngrok.io/faq?token=${token}`)
+    await fetch(`http://4e90c95c.ngrok.io/faq?token=${token}`)
       .then(res => res.json())
       .then((result) => {
 

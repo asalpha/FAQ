@@ -65,7 +65,7 @@ export default function SignInSide() {
 
   let apiFetch = async (data) => {
     try {
-    await fetch('http://74b6b87c.ngrok.io/ticket', {
+    await fetch('http://4e90c95c.ngrok.io/ticket', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -83,8 +83,8 @@ export default function SignInSide() {
 
         console.log(response)
         console.log(response.match)
-        let result = []
-        result.push(response.topResult)
+        let result = response.results
+        // result.push(response.topResult)
         console.log(result)
         var rows = []
         for (let i = 0; i < result.length; i++) {

@@ -57,7 +57,7 @@ export default function AnswerTicket() {
   let update = {}
   let apiFetch = async (id, sol) => {
     try {
-    await fetch('http://74b6b87c.ngrok.io/ticket', {
+    await fetch('http://4e90c95c.ngrok.io/ticket', {
       method: 'PATCH',
       headers: {
         'Accept': 'application/json',
