@@ -68,7 +68,7 @@ function Appbar() {
 
   let ticketFetch = async () => {
     try {
-    await fetch(`http://74b6b87c.ngrok.io/ticket?token=${token}`)
+    await fetch(`http://4e90c95c.ngrok.io/ticket?token=${token}`)
       .then(res => res.json())
       .then((result) => {
         result = result.tickets
@@ -96,7 +96,7 @@ function Appbar() {
           <Button onClick={() =>  handlePress("/")} style={{color:'white', fontWeight:'bold', fontSize:33, flexGrow: 1}}>
             FAQ.AI
           </Button>
-          <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>
+          {user ? null : <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>}
           <Button onClick={() => handlePress("/search")} style={{margin:15}} variant="contained" color="secondary">Search</Button>
           <Button onClick={() => handlePress("/faq")} style={{margin:15}} variant="contained" color="secondary">FAQ</Button>
           <Button onClick={() => handlePress("/answerticket")} style={{margin:15}} variant="contained" color="secondary">Answer Tickets</Button>

@@ -96,7 +96,7 @@ export default function SignInSide() {
         }
         console.log("ROWS", rows)
         let data = {
-          title: "SIMILAR TICKETS",
+          title: response.match ? "MATCHING TICKET" : "SIMILAR TICKETS",
           rows: rows
         }
         console.log("DATA", data)
