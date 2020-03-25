@@ -55,9 +55,11 @@ export default function AnswerTicket() {
   let user = history.location.state ? history.location.state.user : "";
   let data = history.location.state ? history.location.state.data : dataOld;
   let update = {}
+
   let apiFetch = async (id, sol) => {
+    console.log("fetch started, trying for", id ,"with solution: ", sol)
     try {
-    await fetch('http://4e90c95c.ngrok.io/ticket', {
+    await fetch('https://4a6fa1ae.ngrok.io/question', {
       method: 'PATCH',
       headers: {
         'Accept': 'application/json',
@@ -66,7 +68,7 @@ export default function AnswerTicket() {
       body: JSON.stringify({
         token: token,
         id: id,
-        solutionDesc: sol,
+        answer: sol,
       })
     })
       .then(res => res.json())
@@ -74,23 +76,15 @@ export default function AnswerTicket() {
         console.log("RESPONSE")
         console.log(response)
         let result = []
-        result.push(response.ticket)
+        result.push(response.question)
         console.log(result)
-        var rows = []
-        for (let i = 0; i < result.length; i++) {
-          console.log("i", result[i])
-          rows.push({
-            title: result[i].problemDesc,
-            content: result[i].solutionDesc
-          })
+
+        let expand = {}
+        for(let i = 0; i < result.length; i++) {
+          expand[result.id] = false
         }
-        console.log("ROWS", rows)
-        let data = {
-          title: "ANSWERED TICKET",
-          rows: rows
-        }
-        console.log("DATA", data)
-        history.push("/ticket", { token: token, data:data, user: user})
+        console.log("RESULT: ", result)
+        history.push("/ticket", { token: token, data:result, expand: expand, user: user})
         return result
       })
     } catch(error) {
@@ -120,7 +114,7 @@ export default function AnswerTicket() {
     e.push(
       <Card style={{padding:44}}>
       <Typography component="h2" variant="h5">
-        {data[i].problemDesc}
+        {data[i].question}
       </Typography>
         <TextField
           variant="filled"

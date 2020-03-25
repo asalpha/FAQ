@@ -33,23 +33,23 @@ function Appbar() {
     } else {
       console.log('inside else')
       history.push(path, { token: token, user: user})
+    }
   }
-
-}
 
   let apiFetch = async () => {
     try {
-    await fetch(`http://4e90c95c.ngrok.io/faq?token=${token}`)
+    await fetch(`https://4a6fa1ae.ngrok.io/question?token=${token}`)
       .then(res => res.json())
       .then((result) => {
-
+        result = result.questions
         console.log(result)
         var rows = []
-        for (let i = 0; i < result.faqs.length; i++) {
-          console.log("i", result.faqs[i])
+        for (let i = 0; i < result.length; i++) {
+          console.log("i", result[i])
           rows.push({
-            title: result.faqs[i].questionDesc,
-            content: result.faqs[i].solutionDesc
+            title: result[i].question,
+            content: result[i].answer,
+            views: result[i].views.count,
           })
         }
         console.log("ROWS", rows)
@@ -68,11 +68,11 @@ function Appbar() {
 
   let ticketFetch = async () => {
     try {
-    await fetch(`http://4e90c95c.ngrok.io/ticket?token=${token}`)
+    await fetch(`https://4a6fa1ae.ngrok.io/question?token=${token}`)
       .then(res => res.json())
       .then((result) => {
-        result = result.tickets
-        result = result.filter(function(obj) {return obj.solutionDesc === ""})
+        result = result.questions
+        result = result.filter(function(obj) {return obj.answer === ""})
         console.log(result)
         let data = []
         console.log("DATA", data)
@@ -87,20 +87,24 @@ function Appbar() {
 
   return (
     <div className="App">
-    <AppBar position="static" color='primary' position='sticky'>
+    <AppBar position="static" color='white' position='sticky'>
         <Toolbar>
-          <IconButton edge="start" style={{marginRight:6}} color="inherit" size="small" aria-label="menu">
-            <AccountCircleIcon style={{marginRight:4}} />
-            {user}
-          </IconButton>
-          <Button onClick={() =>  handlePress("/")} style={{color:'white', fontWeight:'bold', fontSize:33, flexGrow: 1}}>
-            FAQ.AI
+        <Button onClick={() =>  handlePress("/")}>
+          <img style={{height:45, width:75}} src='https://www.jobboom.com/career/wp-content/uploads/2013/08/FAQ1.jpg' alt="Logo" />
+        </Button>
+          <Button onClick={() =>  handlePress("/")} style={{color:'black', fontWeight:'bold', fontSize:33, flexGrow: 1}}>
+
           </Button>
-          {user ? null : <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>}
-          <Button onClick={() => handlePress("/search")} style={{margin:15}} variant="contained" color="secondary">Search</Button>
-          <Button onClick={() => handlePress("/faq")} style={{margin:15}} variant="contained" color="secondary">FAQ</Button>
-          <Button onClick={() => handlePress("/answerticket")} style={{margin:15}} variant="contained" color="secondary">Answer Tickets</Button>
-          <Button onClick={() => handlePress("/submitFaq")} style={{margin:15}} variant="contained" color="secondary">Submit FAQ</Button>
+          <Button onClick={() => handlePress("/faq")} style={{margin:15}} variant="contained" color="primary">FAQs</Button>
+          <Button onClick={() => handlePress("/answerticket")} style={{margin:15}} variant="contained" color="primary">Answer</Button>
+          <Button onClick={() => handlePress("/analytics")} style={{margin:15}} variant="contained" color="primary">Analytics</Button>
+          <Button onClick={() => handlePress("/search")} style={{margin:15, width:111}} variant="contained" color="primary">Search</Button>
+          <Typography style={{fontSize:44, marginRight:13}}> | </Typography>
+          {user ? <div>
+            <AccountCircleIcon size="large" style={{color:'#e91e63', marginRight:4}} />
+            <Typography style={{fontSize:15, color:'#e91e63'}}> {user.substring(0,user.search('@'))} </Typography>
+          </div>
+           : <Button onClick={() => handlePress("/signin")} style={{margin:15}} variant="contained" color="secondary">Login</Button>}
         </Toolbar>
       </AppBar>
     </div>

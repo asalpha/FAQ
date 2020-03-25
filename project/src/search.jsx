@@ -13,6 +13,9 @@ import Grid from '@material-ui/core/Grid';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import Typography from '@material-ui/core/Typography';
 import Appbar from './AppBar'
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import SearchIcon from "@material-ui/icons/Search";
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 
@@ -32,10 +35,12 @@ const useStyles = makeStyles(theme => ({
     backgroundPosition: 'center',
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    marginTop: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    backgroundColor:'#361fa7',
+    width:'100%'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -51,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function SignInSide() {
+export default function Search() {
   const classes = useStyles();
   const [isOpen, setIsOpen] = React.useState(false);
   const [desc, setDesc] = React.useState("");
@@ -63,9 +68,42 @@ export default function SignInSide() {
   let user = history.location.state ? history.location.state.user : "";
   console.log("SEARCH", token, user)
 
+
+  let getQuestions = async () => {
+    try {
+    await fetch(`https://4a6fa1ae.ngrok.io/question?token=${token}`)
+      .then(res => res.json())
+      .then((result) => {
+        result = result.questions
+        console.log(result)
+        var rows = []
+        for (let i = 0; i < result.length; i++) {
+          console.log("i", result[i])
+          rows.push({
+            title: result[i].question,
+            content: result[i].answer,
+            views: result[i].views.count,
+          })
+        }
+        console.log("ROWS", rows)
+        let data = {
+          title: "Frequently Asked Questions",
+          rows: rows
+        }
+        console.log("DATA", data)
+        // history.push("/faq", { token: token, data:data, user: user})
+        return result
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
+
   let apiFetch = async (data) => {
     try {
-    await fetch('http://4e90c95c.ngrok.io/ticket', {
+      console.log("FETCH STARTED")
+    await fetch('https://4a6fa1ae.ngrok.io/question', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -73,7 +111,7 @@ export default function SignInSide() {
       },
       body: JSON.stringify({
         token: token,
-        problemDesc: desc,
+        question: desc,
         sensitivity: 1,
         submit: check,
       })
@@ -81,26 +119,16 @@ export default function SignInSide() {
       .then(res => res.json())
       .then((response) => {
 
-        console.log(response)
-        console.log(response.match)
+        console.log("RESPONSE:", response)
+        console.log("MATCH:", response.match)
         let result = response.results
+        result = result.filter(function(obj) {return obj.answer !== ""})
+        let expand = {}
+        for(let i = 0; i < result.length; i++) {
+          expand[result.id] = false
+        }
         // result.push(response.topResult)
-        console.log(result)
-        var rows = []
-        for (let i = 0; i < result.length; i++) {
-          console.log("i", result[i])
-          rows.push({
-            title: result[i].problemDesc,
-            content: result[i].solutionDesc
-          })
-        }
-        console.log("ROWS", rows)
-        let data = {
-          title: response.match ? "MATCHING TICKET" : "SIMILAR TICKETS",
-          rows: rows
-        }
-        console.log("DATA", data)
-        history.push("/ticket", { token: token, data:data, user:user})
+        history.push("/ticket", { token: token, data:result, expand: expand, user:user})
         return result
       })
     } catch(error) {
@@ -122,56 +150,44 @@ export default function SignInSide() {
 
   let handlePress = () => {
     apiFetch()
+    // getQuestions()
     console.log("PREESSEEDD")
   }
 
   return (
     <div>
     <Appbar token={token} user={user} />
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+
+
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LiveHelp />
-          </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" style={{color:"white", fontSize:33, padding:22, paddingTop:33}}>
             Search or Create a ticket
           </Typography>
-            <TextField
-              variant="filled"
-              multiline
-              margin="normal"
-              required
-              fullWidth
-              rows="6"
-              id="filled-multiline-static"
-              label="Enter the Problem Description here"
-              name="search"
-              autoComplete="search"
-              autoFocus
-              onChange={handleChange}
-            />
+
+          <TextField
+          // label="With normal TextField"
+          onChange={handleChange}
+          style={{backgroundColor:"white",width:'75%',}}
+          InputProps={{style:{marginLeft:20, height:50}, endAdornment: (<SearchIcon style={{ padding:8}}/>)}}
+          />
+
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value="remember" color="primary" style={{color:"white"}} />}
               label="Submit New Ticket"
+              style={{color:"white"}}
               onChange={handleCheck}
             />
             <Button
               type="submit"
-              fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
+              style={{width:200,height:50, margin:22}}
               onClick={handlePress}
             >
               Search
             </Button>
 
         </div>
-      </Grid>
-      </Grid>
       </div>
 
   );

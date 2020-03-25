@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
+
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -10,6 +10,15 @@ import Typography from '@material-ui/core/Typography';
 import Faq from 'react-faq-component';
 import Appbar from './AppBar'
 import { useHistory } from "react-router-dom";
+import SearchIcon from "@material-ui/icons/Search";
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Search from './search'
+import { Collapse,  CardBody, Card } from 'reactstrap';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+
 
 const dataOld = {
   title: "TICKETS",
@@ -47,30 +56,75 @@ const styles = {
 }
 
 
-
 export default function Tickets() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
   let user = history.location.state ? history.location.state.user : "";
   let data = history.location.state ? history.location.state.data : dataOld;
+  let expand = history.location.state ? history.location.state.expand : {};
+  const [isOpen, setIsOpen] = React.useState(false);
   console.log("TICEKTS", data)
+  let cards = []
+
+  const toggle = (id) => {
+    setIsOpen(!isOpen)
+    console.log("before", expand)
+    expand[id] = !expand[id]
+    console.log("after", expand)
+  };
+
+  const checkOpen = (id) => {
+    console.log("chcek open")
+    return expand[id]
+  }
+
+  const handleVote = (id, like) => {
+      try {
+        console.log("vote starte")
+      fetch('https://4a6fa1ae.ngrok.io/rate', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: token,
+          id: id,
+          like: like,
+        })
+      })
+        .then(res => res.json())
+        .then((response) => {
+          console.log("VOTE RESPONSE:", response)
+        })
+      } catch(error) {
+        alert(error)
+      }
+
+  }
+
+  for(let i = 0; i < data.length; i++) {
+    let row = data[i]
+    cards.push(
+      <div style={{border: '1px solid black',}}>
+        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+        <Button color="primary" onClick={() => toggle(row.id)} style={{ marginBottom: '1rem' }}>{row.question}</Button>
+        <div style={{display:'flex', flexDirection:'row', padding:13}}>
+        <ThumbUpIcon onClick={() => handleVote(row.id, 'true')} style={{padding:5, color:'green'}}/>
+        <ThumbDownIcon onClick={() => handleVote(row.id, 'false')} style={{padding:5, color:'red'}}/>
+        </div>
+        </div>
+        {checkOpen(row.id) ? <Typography style={{padding:20, borderWidth:5}}> {row.answer} </Typography> : null}
+      </div>
+
+    )
+  }
     return (
-      <div>
-      <Appbar token={token} user={user} />
-      <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
-      <Card>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          height="300"
-          image="https://c1.sfdcstatic.com/content/dam/blogs/us/thumbnails/4-ways-to-improve-customer-service-with-a-conversational-approach/shutterstock_207788785.jpg"
-          title="Contemplative Reptile"
-        />
-      </CardActionArea>
-    </Card>
-        <Faq data={data} styles={styles}/>
+      <div >
+        <Search/>
+        <div style={{padding:50, paddingLeft:150, paddingRight:150}}>
+        {cards}
+        </div>
       </div>
-      </div>
-      )
+    )
 }
