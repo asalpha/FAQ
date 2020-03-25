@@ -30,18 +30,13 @@ export default function Tickets() {
   let history = useHistory();
   let token = history.location.state ? history.location.state.token : "";
   let user = history.location.state ? history.location.state.user : "";
-  const data = [
-  			{
-  				color: "steelblue",
-  				points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}]
-  			}
-  		];
-      const data2 = [
-            {
-              color: "steelblue",
-              points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}, {x: 4, y: 9}, {x: 4, y: 8}]
-            }
-          ];
+
+const data = [
+    {
+      color: "steelblue",
+      points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}, {x: 4, y: 9}, {x: 4, y: 8}]
+    }
+];
 
     return (
       <div>
@@ -53,7 +48,7 @@ export default function Tickets() {
           <LineChart
 						width={600}
 						height={400}
-						data={data2}
+						data={data}
 					/>
           </div>
           <div style={{ padding:50, height: 400, width: 600 }}>

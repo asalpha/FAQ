@@ -66,9 +66,36 @@ export default function Tickets() {
   console.log("TICEKTS", data)
   let cards = []
 
+  let updateView = (id) => {
+    try {
+      console.log("FETCH STARTED")
+    fetch('https://4a6fa1ae.ngrok.io/view', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: token,
+        id: id,
+      })
+    })
+      .then(res => res.json())
+      .then((response) => {
+
+        console.log("RESPONSE:", response)
+      })
+    } catch(error) {
+      alert(error)
+    }
+  }
+
   const toggle = (id) => {
     setIsOpen(!isOpen)
     console.log("before", expand)
+    if(!expand[id]) {
+      updateView(id)
+    }
     expand[id] = !expand[id]
     console.log("after", expand)
   };
@@ -79,7 +106,26 @@ export default function Tickets() {
   }
 
   const handleVote = (id, like) => {
-      try {
+    console.log("D1: ", data)
+    for(let i = 0; i < data.length; i++) {
+      if (data[i].id === id) {
+        console.log("FOUND", like)
+        if(like === "true") {
+          if(!data[i].likedBy.includes(user)) {
+             data[i].likedBy.push(user)
+          }
+          data[i].dislikedBy = data[i].dislikedBy.filter(e => e !== user)
+        } else {
+          if(!data[i].dislikedBy.includes(user)) {
+             data[i].dislikedBy.push(user)
+          }
+          data[i].likedBy = data[i].likedBy.filter(e => e !== user)
+        }
+        break
+      }
+    }
+    console.log("D2: ", data)
+    try {
         console.log("vote starte")
       fetch('https://4a6fa1ae.ngrok.io/rate', {
         method: 'POST',
@@ -96,6 +142,7 @@ export default function Tickets() {
         .then(res => res.json())
         .then((response) => {
           console.log("VOTE RESPONSE:", response)
+          history.push("/ticket", { token: token, data:data, expand: expand, user:user})
         })
       } catch(error) {
         alert(error)
@@ -108,13 +155,19 @@ export default function Tickets() {
     cards.push(
       <div style={{border: '1px solid black',}}>
         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-        <Button color="primary" onClick={() => toggle(row.id)} style={{ marginBottom: '1rem' }}>{row.question}</Button>
+
+        <Button color="primary" onClick={() => toggle(row.id)} style={{ textTransform: "none" }}>
+          <Typography style={{paddingLeft:2, fontSize:16,textTransform: "none"}}> {row.question} </Typography>
+        </Button>
+
         <div style={{display:'flex', flexDirection:'row', padding:13}}>
+        <Typography style={{padding:5}}> {row.likedBy ? row.likedBy.length : 0} </Typography>
         <ThumbUpIcon onClick={() => handleVote(row.id, 'true')} style={{padding:5, color:'green'}}/>
         <ThumbDownIcon onClick={() => handleVote(row.id, 'false')} style={{padding:5, color:'red'}}/>
+        <Typography style={{padding:5}}> {row.likedBy ? row.dislikedBy.length : 0} </Typography>
         </div>
         </div>
-        {checkOpen(row.id) ? <Typography style={{padding:20, borderWidth:5}}> {row.answer} </Typography> : null}
+        {checkOpen(row.id) ? <Typography style={{padding:10,fontSize:16}}> {row.answer} </Typography> : null}
       </div>
 
     )

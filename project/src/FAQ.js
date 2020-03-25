@@ -59,17 +59,7 @@ export default function FAQ() {
       <div>
       <Appbar token={token} user={user} />
       <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
-      <Card>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          height="300"
-          image="https://www.nicepng.com/png/detail/119-1192104_faq-frequently-asked-questions-logo.png"
-          title="Contemplative Reptile"
-        />
-      </CardActionArea>
-    </Card>
+    
         <Faq data={data} styles={styles}/>
       </div>
       </div>

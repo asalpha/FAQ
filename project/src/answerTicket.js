@@ -147,20 +147,10 @@ export default function AnswerTicket() {
       <div>
       <Appbar token={token} user={user} />
       <div style={{paddingRight:'10%', paddingLeft:'10%', height:'100vh'}}>
-      <Typography component="h1" variant="h5">
-        Please answer any tickets that you can
+      <Typography style={{padding:11}} component="h1" variant="h5">
+        Please answer the following tickets
       </Typography>
-      <Card>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          height="300"
-          image="https://c1.sfdcstatic.com/content/dam/blogs/us/thumbnails/4-ways-to-improve-customer-service-with-a-conversational-approach/shutterstock_207788785.jpg"
-          title="Contemplative Reptile"
-        />
-      </CardActionArea>
-    </Card>
+
     {e}
       </div>
       </div>
