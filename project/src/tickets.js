@@ -106,7 +106,6 @@ export default function Tickets() {
   }
 
   const handleVote = (id, like) => {
-    console.log("D1: ", data)
     for(let i = 0; i < data.length; i++) {
       if (data[i].id === id) {
         console.log("FOUND", like)
@@ -124,7 +123,7 @@ export default function Tickets() {
         break
       }
     }
-    console.log("D2: ", data)
+    history.push("/ticket", { token: token, data:data, expand: expand, user:user})
     try {
         console.log("vote starte")
       fetch('https://4a6fa1ae.ngrok.io/rate', {
@@ -142,7 +141,7 @@ export default function Tickets() {
         .then(res => res.json())
         .then((response) => {
           console.log("VOTE RESPONSE:", response)
-          history.push("/ticket", { token: token, data:data, expand: expand, user:user})
+          // history.push("/ticket", { token: token, data:data, expand: expand, user:user})
         })
       } catch(error) {
         alert(error)
@@ -161,10 +160,10 @@ export default function Tickets() {
         </Button>
 
         <div style={{display:'flex', flexDirection:'row', padding:13}}>
-        <Typography style={{padding:5}}> {row.likedBy ? row.likedBy.length : 0} </Typography>
-        <ThumbUpIcon onClick={() => handleVote(row.id, 'true')} style={{padding:5, color:'green'}}/>
-        <ThumbDownIcon onClick={() => handleVote(row.id, 'false')} style={{padding:5, color:'red'}}/>
-        <Typography style={{padding:5}}> {row.likedBy ? row.dislikedBy.length : 0} </Typography>
+        <Typography style={{padding:5}}> {row.likedBy.length} </Typography>
+        <ThumbUpIcon onClick={() => handleVote(row.id, 'true')} style={{padding:5, color: row.likedBy.includes(user) ? 'green' : 'grey'}}/>
+        <ThumbDownIcon onClick={() => handleVote(row.id, 'false')} style={{padding:5, color: row.dislikedBy.includes(user) ? 'red' : 'grey'}}/>
+        <Typography style={{padding:5}}> {row.dislikedBy.length} </Typography>
         </div>
         </div>
         {checkOpen(row.id) ? <Typography style={{padding:10,fontSize:16}}> {row.answer} </Typography> : null}

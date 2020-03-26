@@ -47,11 +47,14 @@ function Appbar() {
         for (let i = 0; i < result.length; i++) {
           console.log("i", result[i])
           rows.push({
-            title: result[i].question,
+            title: result[i].question + " - Views: " + result[i].views.count,
             content: result[i].answer,
             views: result[i].views.count,
           })
         }
+        rows.sort(function(a, b) {
+          return b.views - a.views;
+        })
         console.log("ROWS", rows)
         let data = {
           title: "Frequently Asked Questions",
